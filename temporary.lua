@@ -95,8 +95,8 @@ local function autocast()
             Text = "Enabled",
             Duration = 2
         })
-        remote()
         game:GetService("Players").LocalPlayer.Character.Head.Anchored = true
+        remote()
     else
         StarterGui:SetCore("SendNotification", {
             Title = "Auto Cast",
