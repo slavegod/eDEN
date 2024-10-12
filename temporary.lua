@@ -66,6 +66,8 @@ local function remote()
 
     local remote = player.Character and player.Character:FindFirstChildOfClass("Tool") and player.Character:FindFirstChildOfClass("Tool").events.cast
     if remote then
+        -- REMOVE THE COMMENT FOR THIS TO ADD BACK AUTOSELLING.
+        --game:GetService("Workspace").world.npcs["Marc Merchant"].merchant.sellall:InvokeServer()
         remote:FireServer(unpack(args))
         rod()
     else
