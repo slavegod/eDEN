@@ -14,6 +14,8 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 local autoCastEnabled = false
 local connection
+local freezeConnection
+local togglePosition
 
 StarterGui:SetCore("SendNotification", {
     Title = "Important",
@@ -77,12 +79,42 @@ end
 
 local function rod()
     if game:GetService("Players").LocalPlayer.Character:WaitForChild(game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool"), 5) then
+        local humanoidRootPart = game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart", 3)
+        if humanoidRootPart then
+            humanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+            humanoidRootPart.RotVelocity = Vector3.new(0, 0, 0)
+        end
         local rod = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool")
         rod.Parent = game:GetService("Players").LocalPlayer.Backpack
         repeat
             task.wait()
         until rod.Parent == game:GetService("Players").LocalPlayer.Backpack
         local rod = game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(rod)
+    end
+end
+
+local function freezeCharacter()
+    if freezeConnection then freezeConnection:Disconnect() end
+    
+    freezeConnection = RunService.Heartbeat:Connect(function()
+        local character = player.Character
+        if character then
+            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+            if humanoidRootPart then
+                humanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+                humanoidRootPart.RotVelocity = Vector3.new(0, 0, 0)
+                if togglePosition then
+                    humanoidRootPart.Position = togglePosition
+                end
+            end
+        end
+    end)
+end
+
+local function unfreezeCharacter()
+    if freezeConnection then
+        freezeConnection:Disconnect()
+        freezeConnection = nil
     end
 end
 
@@ -95,7 +127,14 @@ local function autocast()
             Text = "Enabled",
             Duration = 2
         })
-        game:GetService("Players").LocalPlayer.Character.Head.Anchored = true
+        local character = player.Character
+        if character then
+            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+            if humanoidRootPart then
+                togglePosition = humanoidRootPart.Position
+            end
+        end
+        freezeCharacter()
         remote()
     else
         StarterGui:SetCore("SendNotification", {
@@ -103,7 +142,8 @@ local function autocast()
             Text = "Disabled",
             Duration = 2
         })
-        game:GetService("Players").LocalPlayer.Character.Head.Anchored = false
+        unfreezeCharacter()
+        togglePosition = nil
     end
 end
 
