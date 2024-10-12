@@ -1,3 +1,9 @@
+--[[
+    Feel free to use the source code for your projects, a better version will be made in the coming weeks.
+    The updated version will be 100% free aside from supporters (people that donate to me) getting some more fine tuned features.
+    My Discord is the same as it always is, 70467f42f05745ef9e51b07aca97b189.
+]]
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -8,6 +14,22 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 local autoCastEnabled = false
 local connection
+
+StarterGui:SetCore("SendNotification", {
+    Title = "Important",
+    Text = "The script will be turned into free hub in the coming weeks.",
+    Duration = 20
+})
+StarterGui:SetCore("SendNotification", {
+    Title = "Important",
+    Text = "Press P to toggle Auto-Cast.",
+    Duration = 20
+})
+StarterGui:SetCore("SendNotification", {
+    Title = "Important",
+    Text = "As always my discord is the same, 70467f42f05745ef9e51b07aca97b189.",
+    Duration = 20
+})
 
 local function clientSideDetection()
     local reel = playerGui:FindFirstChild("reel")
@@ -44,10 +66,21 @@ local function remote()
 
     local remote = player.Character and player.Character:FindFirstChildOfClass("Tool") and player.Character:FindFirstChildOfClass("Tool").events.cast
     if remote then
-        --game:GetService("Workspace").world.npcs["Marc Merchant"].merchant.sellall:InvokeServer()
         remote:FireServer(unpack(args))
+        rod()
     else
         print("this bullshit game doesnt have the remote... FUCK!")
+    end
+end
+
+local function rod()
+    if game:GetService("Players").LocalPlayer.Character:WaitForChild(game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool"), 5) then
+        local rod = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool")
+        rod.Parent = game:GetService("Players").LocalPlayer.Backpack
+        repeat
+            task.wait()
+        until rod.Parent == game:GetService("Players").LocalPlayer.Backpack
+        local rod = game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(rod)
     end
 end
 
@@ -96,4 +129,16 @@ if playerGui:FindFirstChild("reel") and
    playerGui.reel:FindFirstChild("bar") and 
    playerGui.reel.bar:FindFirstChild("playerbar") then
     startTracking()
+end
+
+game:GetService("Players").LocalPlayer.PlayerGui.ChildAdded:Connect(function(child)
+    if child.Name == "shakeui" then
+        child:WaitForChild("safezone").ChildAdded:Connect(function(c)
+            c.Position = UDim2.new(0.5, 0, 0.5, 0)
+        end)
+    end
+end)
+
+while task.wait(540) do
+    mouse1click(0, 0)
 end
